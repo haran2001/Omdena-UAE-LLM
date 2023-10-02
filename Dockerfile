@@ -1,23 +1,17 @@
-# Use the official Python image
-# FROM python:3.10
 FROM python:3.8.18
 
-# Set the working directory inside the container
-WORKDIR /app
+WORKDIR /usr/src/app
 
-# Copy the requirements.txt file first to leverage Docker cache
-# COPY requirements.txt .
-COPY  req_dl4.txt .
+# dont write pyc files
+# dont buffer to stdout/stderr
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Install required Python packages
-# RUN pip install -r requirements.txt --default-timeout=100 future
-RUN pip install -r req_dl4.txt --default-timeout=100 future
+COPY ./requirements.txt /usr/src/app/requirements.txt
 
-# Copy the rest of the application files to the container's working directory
-COPY . .
+# dependencies
+RUN pip install --upgrade pip setuptools wheel \
+    && pip install -r requirements.txt --default-timeout=100 future\
+    && rm -rf /root/.cache/pip
 
-# Expose the port that Streamlit will run on
-EXPOSE 8501
-
-# Command to run your Streamlit application
-CMD ["streamlit", "run", "chatbot_app.py"]
+COPY ./ /usr/src/app
