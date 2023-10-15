@@ -10,4 +10,5 @@ services:
             - ./:/usr/src/app
         ports:
             - 8501:8501
-        image: yourstreamlitapp:latest
+        # image: yourstreamlitapp:latest
+        image: aianytime1.azurecr.io/images:latest

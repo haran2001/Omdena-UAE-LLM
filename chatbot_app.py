@@ -16,12 +16,12 @@ from langchain.chains import RetrievalQA
 # from constants import CHROMA_SETTINGS
 # from streamlit_chat import message
 
-# import speech_recognition as sr
-# from googletrans import Translator
-# import language_tool_python
-# from textblob import Word, TextBlob
-# from happytransformer import HappyTextToText as HappyTTT
-# from happytransformer import TTSettings
+import speech_recognition as sr
+from googletrans import Translator
+import language_tool_python
+from textblob import Word, TextBlob
+from happytransformer import HappyTextToText as HappyTTT
+from happytransformer import TTSettings
 
 import chromadb
 from chromadb.config import Settings 
@@ -239,13 +239,16 @@ def translate_text(text, target_language):
     return translated_text.text
         
 def speech():
-    recognizer = sr.Recognizer()
     audio_option = st.radio("Select audio source:", ("Upload Audio", "Use Microphone"))
     if audio_option == "Upload Audio":
         uploaded_file = st.file_uploader("Choose an audio file...", type=["wav"])
         if uploaded_file is not None:
             st.audio(uploaded_file, format='audio/wav')
+            audio_bytes = uploaded_file.read()
+            st.write("filename:", uploaded_file.name)
+            st.write(audio_bytes)
             transcription = transcribe_audio(uploaded_file.name)
+            # transcription = transcribe_audio(audio_bytes)
             # Apply grammar correction (replace Grammer_Fixer with your grammar correction logic)
             corrected_transcription = Grammer_Fixer(transcription)
             corrected_transcription = fix_paragraph_words(corrected_transcription)  # Apply spell fixing
@@ -271,7 +274,8 @@ def speech():
 
 
 if __name__ == "__main__":
-    # speech()
+    recognizer = sr.Recognizer()
+    speech()
     main()
 
 
